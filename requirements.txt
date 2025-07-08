@@ -1,0 +1,10 @@
+# Python version
+
+# Main dependencies
+streamlit==1.35.0
+
+# Build tool for standalone app
+pyinstaller==6.14.1
+
+# Excel extraction (optional, for development)
+openpyxl==3.1.2

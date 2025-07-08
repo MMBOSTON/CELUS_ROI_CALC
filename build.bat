@@ -1,0 +1,1 @@
+pyinstaller ... --add-data "scripts\roi_calculator_app.py;." --add-data "Template\ROI Calculator_v1.xlsx;Template" scripts\launch_app.py

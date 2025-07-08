@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.Python.Sdk/3.8.0">
+  <PropertyGroup>
+    <ProjectGuid>{B1A1A1A1-1111-2222-3333-444444444444}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CELUS_ROI_Calc</RootNamespace>
+    <AssemblyName>CELUS_ROI_Calc</AssemblyName>
+    <PythonInterpreter>python</PythonInterpreter>
+    <StartupFile>launch_app.py</StartupFile>
+    <SearchPath>.;Template</SearchPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="launch_app.py" />
+    <Compile Include="roi_calculator_app.py" />
+    <Content Include="ROI Calculator_v1.xlsx" />
+    <Content Include="scenarios.json" />
+    <Content Include="sample_scenarios_template.csv" />
+    <Content Include="Template\**" />
+    <Content Include="requirements.txt" />
+  </ItemGroup>
+</Project>
