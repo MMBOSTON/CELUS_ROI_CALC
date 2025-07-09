@@ -1,3 +1,6 @@
+# CELUS ROI Calculator Streamlit App
+# This is a direct copy of scripts/roi_calculator_app.py for cloud deployment.
+
 # print("ROI Calculator app started")
 import streamlit as st
 import json
@@ -345,13 +348,6 @@ st.markdown(
         max-width: 140px !important;
         min-width: 80px !important;
         padding-left: 0.01rem !important;
-        padding-right: 0.01rem !important;
-    }
-    .scenario-card .stExpanderContent .stNumberInput, .scenario-card .stExpanderContent .stTextInput {
-        margin-bottom: 0.01rem !important;
-        padding-top: 0.01rem !important;
-        padding-bottom: 0.01rem !important;
-    }
     .scenario-card .stExpanderContent label {
         margin-bottom: 0.01rem !important;
         font-size: 0.90rem !important;
@@ -523,7 +519,7 @@ if display_any:
                     revenue_from_indirect_sales = value_to_production * share_bom
                     # CELUS
                     celus_converted_users = website_visitors * celus_conversion
-                    celus_total_bom_value_from_users = celus_converted_users * total_value_per_bom
+                    celus_total_bom_value_from_users = celus_converted_users * total_bom_value_from_users
                     celus_value_to_production = celus_total_bom_value_from_users * prototype_to_prod
                     celus_revenue = celus_value_to_production * celus_share_bom
                     multiplier = celus_revenue / revenue_from_indirect_sales if revenue_from_indirect_sales else 0
@@ -695,7 +691,7 @@ with stop_col:
         st.stop()
 with rerun_col:
     if st.button("Rerun App", key="rerun_app_btn"):
-        st.experimental_rerun()
+        st.rerun()
 
 # --- Make right-side subheaders smaller ---
 st.markdown("""
@@ -773,23 +769,3 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-# --- Sidebar: Reset All to Defaults Button ---
-with st.sidebar:
-    if st.button("Reset All to Defaults", key="reset_all_btn"):
-        # Remove all scenario-related session state keys (including widget keys)
-        keys_to_remove = []
-        for k in list(st.session_state.keys()):
-            if (
-                k.startswith("bom_") or k.startswith("orders_") or k.startswith("conv_") or
-                k.startswith("proto_") or k.startswith("share_") or k.startswith("celus_conv_") or
-                k.startswith("celus_share_") or k.startswith("visitors_") or k.startswith("sel_") or
-                k in ["scenarios", "selected", "expand_all", "chart_type_radio", "bar_metric_select", "grouped_bar_metrics", "remove_scenario", "rename_scenario", "rename_input", "dup_scenario", "template_name", "load_template_select", "import_file"]
-            ):
-                keys_to_remove.append(k)
-        for k in keys_to_remove:
-            del st.session_state[k]
-        # Re-initialize scenarios and selection to defaults
-        st.session_state.scenarios = [s.copy() for s in DEFAULT_SCENARIOS]
-        st.session_state.selected = [True] * len(DEFAULT_SCENARIOS)
-        st.rerun()
