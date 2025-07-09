@@ -59,139 +59,136 @@ st.sidebar.markdown("""
 
 Select one or more scenarios below to view and adjust their assumptions and see the calculated ROI results. The average BOM Values & Revenues are based on Monthly estimates, and the calculations will show how working with CELUS can impact your business.
 """)
-st.sidebar.header("Select Scenarios")
 
-# Scenario customization (add/remove/rename)
-if "scenarios" not in st.session_state:
-    # Always start with only the three default scenarios unless loading from file
-    st.session_state.scenarios = [s.copy() for s in DEFAULT_SCENARIOS]
-if "selected" not in st.session_state or len(st.session_state.selected) != len(st.session_state.scenarios):
-    st.session_state.selected = [True] * len(st.session_state.scenarios)
+# --- Sidebar: Select Scenarios (Collapsible) ---
+with st.sidebar.expander("Select Scenarios", expanded=False):
+    # Scenario customization (add/remove/rename)
+    if "scenarios" not in st.session_state:
+        # Always start with only the three default scenarios unless loading from file
+        st.session_state.scenarios = [s.copy() for s in DEFAULT_SCENARIOS]
+    if "selected" not in st.session_state or len(st.session_state.selected) != len(st.session_state.scenarios):
+        st.session_state.selected = [True] * len(st.session_state.scenarios)
 
-# Add scenario
-if st.sidebar.button("Add Scenario"):
-    st.session_state.scenarios.append({
-        "label": f"Custom Scenario {len(st.session_state.scenarios)+1}",
-        "defaults": (50, 100, 0.005, 0.25, 0.25, 0.01, 0.4)
-    })
-    st.session_state.selected.append(True)
+    # Add scenario
+    if st.button("Add Scenario"):
+        st.session_state.scenarios.append({
+            "label": f"Custom Scenario {len(st.session_state.scenarios)+1}",
+            "defaults": (50, 100, 0.005, 0.25, 0.25, 0.01, 0.4)
+        })
+        st.session_state.selected.append(True)
 
-# Remove scenario
-remove_idx = st.sidebar.selectbox("Remove Scenario", [i for i, s in enumerate(st.session_state.scenarios)], format_func=lambda i: st.session_state.scenarios[i]["label"] if st.session_state.scenarios else "", key="remove_scenario")
-if st.sidebar.button("Remove Selected Scenario") and len(st.session_state.scenarios) > 1:
-    st.session_state.scenarios.pop(remove_idx)
-    st.session_state.selected.pop(remove_idx)
+    # Remove scenario
+    remove_idx = st.selectbox("Remove Scenario", [i for i, s in enumerate(st.session_state.scenarios)], format_func=lambda i: st.session_state.scenarios[i]["label"] if st.session_state.scenarios else "", key="remove_scenario")
+    if st.button("Remove Selected Scenario") and len(st.session_state.scenarios) > 1:
+        st.session_state.scenarios.pop(remove_idx)
+        st.session_state.selected.pop(remove_idx)
 
-# Rename scenario
-rename_idx = st.sidebar.selectbox("Rename Scenario", [i for i, s in enumerate(st.session_state.scenarios)], format_func=lambda i: st.session_state.scenarios[i]["label"] if st.session_state.scenarios else "", key="rename_scenario")
-new_name = st.sidebar.text_input("New Name", value=st.session_state.scenarios[rename_idx]["label"] if st.session_state.scenarios else "", key="rename_input")
-if st.sidebar.button("Rename"):
-    st.session_state.scenarios[rename_idx]["label"] = new_name
+    # Rename scenario
+    rename_idx = st.selectbox("Rename Scenario", [i for i, s in enumerate(st.session_state.scenarios)], format_func=lambda i: st.session_state.scenarios[i]["label"] if st.session_state.scenarios else "", key="rename_scenario")
+    new_name = st.text_input("New Name", value=st.session_state.scenarios[rename_idx]["label"] if st.session_state.scenarios else "", key="rename_input")
+    if st.button("Rename"):
+        st.session_state.scenarios[rename_idx]["label"] = new_name
 
-# Scenario selection checkboxes
-st.session_state.selected = [st.sidebar.checkbox(s["label"], value=st.session_state.selected[i], key=f"sel_{i}") for i, s in enumerate(st.session_state.scenarios)]
+    # Scenario selection checkboxes
+    st.session_state.selected = [st.checkbox(s["label"], value=st.session_state.selected[i], key=f"sel_{i}") for i, s in enumerate(st.session_state.scenarios)]
 
-# Save/load scenarios
-col_save, col_load = st.sidebar.columns(2)
-with col_save:
-    if st.button("Save Scenarios"):
-        with open(SCENARIO_FILE, "w") as f:
+    # Save/load scenarios
+    col_save, col_load = st.columns(2)
+    with col_save:
+        if st.button("Save Scenarios"):
+            with open(SCENARIO_FILE, "w") as f:
+                json.dump(st.session_state.scenarios, f, indent=2)
+            st.success("Scenarios saved!")
+    with col_load:
+        if st.button("Load Scenarios"):
+            if os.path.exists(SCENARIO_FILE):
+                with open(SCENARIO_FILE, "r") as f:
+                    st.session_state.scenarios = json.load(f)
+                st.session_state.selected = [True] * len(st.session_state.scenarios)
+                st.success("Scenarios loaded!")
+            else:
+                st.error("No saved scenarios found.")
+
+# --- Sidebar: Scenario Templates (Collapsible) ---
+with st.sidebar.expander("Scenario Templates", expanded=False):
+    # Save current scenarios as template
+    new_template_name = st.text_input("Template name", "my_template.json", key="template_name")
+    if st.button("Save Scenario Set as Template"):
+        template_path = os.path.join(TEMPLATE_DIR, new_template_name)
+        with open(template_path, "w") as f:
             json.dump(st.session_state.scenarios, f, indent=2)
-        st.sidebar.success("Scenarios saved!")
-with col_load:
-    if st.button("Load Scenarios"):
-        if os.path.exists(SCENARIO_FILE):
-            with open(SCENARIO_FILE, "r") as f:
-                st.session_state.scenarios = json.load(f)
-            st.session_state.selected = [True] * len(st.session_state.scenarios)
-            st.sidebar.success("Scenarios loaded!")
-        else:
-            st.sidebar.error("No saved scenarios found.")
+        st.success(f"Template saved as {new_template_name}")
 
-# --- Sidebar: Scenario Template Management ---
-st.sidebar.markdown("---")
-st.sidebar.subheader("Scenario Templates")
-
-# Save current scenarios as template
-new_template_name = st.sidebar.text_input("Template name", "my_template.json", key="template_name")
-if st.sidebar.button("Save Scenario Set as Template"):
-    template_path = os.path.join(TEMPLATE_DIR, new_template_name)
-    with open(template_path, "w") as f:
-        json.dump(st.session_state.scenarios, f, indent=2)
-    st.sidebar.success(f"Template saved as {new_template_name}")
-
-# List available templates
-try:
-    template_files = [f for f in os.listdir(TEMPLATE_DIR) if f.endswith(".json")]
-except Exception:
-    template_files = []
-
-selected_template = st.sidebar.selectbox("Load Scenario Template", template_files, key="load_template_select")
-if st.sidebar.button("Load Selected Template") and selected_template:
-    template_path = os.path.join(TEMPLATE_DIR, selected_template)
-    with open(template_path, "r") as f:
-        st.session_state.scenarios = json.load(f)
-    st.session_state.selected = [True] * len(st.session_state.scenarios)
-    st.sidebar.success(f"Loaded template: {selected_template}")
-
-# --- Sidebar: Scenario Duplication ---
-st.sidebar.markdown("---")
-st.sidebar.subheader("Duplicate Scenario")
-dup_idx = st.sidebar.selectbox("Select Scenario to Duplicate", [i for i, s in enumerate(st.session_state.scenarios)], format_func=lambda i: st.session_state.scenarios[i]["label"] if st.session_state.scenarios else "", key="dup_scenario")
-if st.sidebar.button("Duplicate Selected Scenario"):
-    import copy
-    new_scenario = copy.deepcopy(st.session_state.scenarios[dup_idx])
-    new_scenario["label"] += " (Copy)"
-    st.session_state.scenarios.append(new_scenario)
-    st.session_state.selected.append(True)
-    st.sidebar.success(f"Duplicated scenario: {new_scenario['label']}")
-
-# --- Import scenarios from CSV/Excel ---
-st.sidebar.markdown("---")
-st.sidebar.subheader("Import Scenarios")
-sample_template_path = pathlib.Path("sample_scenarios_template.csv")
-if sample_template_path.exists():
-    with open(sample_template_path, "rb") as f:
-        st.sidebar.download_button(
-            label="Download Sample Import Template",
-            data=f,
-            file_name="sample_scenarios_template.csv",
-            mime="text/csv",
-            key="download_sample_template"
-        )
-else:
-    st.sidebar.info("Sample import template not found.")
-import_file = st.sidebar.file_uploader("Upload CSV or Excel", type=["csv", "xlsx"], key="import_file")
-if import_file is not None:
+    # List available templates
     try:
-        if import_file.name.endswith(".csv"):
-            df_import = pd.read_csv(import_file)
-        else:
-            df_import = pd.read_excel(import_file)
-        # Expect columns: label, bom, orders, conv, proto, share, celus_conv, celus_share
-        required_cols = ["label", "bom", "orders", "conv", "proto", "share", "celus_conv", "celus_share"]
-        if all(col in df_import.columns for col in required_cols):
-            st.session_state.scenarios = [
-                {
-                    "label": row["label"],
-                    "defaults": (
-                        float(row["bom"]),
-                        float(row["orders"]),
-                        float(row["conv"]),
-                        float(row["proto"]),
-                        float(row["share"]),
-                        float(row["celus_conv"]),
-                        float(row["celus_share"]),
-                    ),
-                }
-                for _, row in df_import.iterrows()
-            ]
-            st.session_state.selected = [True] * len(st.session_state.scenarios)
-            st.sidebar.success("Scenarios imported!")
-        else:
-            st.sidebar.error(f"Missing columns: {set(required_cols) - set(df_import.columns)}")
-    except Exception as e:
-        st.sidebar.error(f"Import failed: {e}")
+        template_files = [f for f in os.listdir(TEMPLATE_DIR) if f.endswith(".json")]
+    except Exception:
+        template_files = []
+
+    selected_template = st.selectbox("Load Scenario Template", template_files, key="load_template_select")
+    if st.button("Load Selected Template") and selected_template:
+        template_path = os.path.join(TEMPLATE_DIR, selected_template)
+        with open(template_path, "r") as f:
+            st.session_state.scenarios = json.load(f)
+        st.session_state.selected = [True] * len(st.session_state.scenarios)
+        st.success(f"Loaded template: {selected_template}")
+
+# --- Sidebar: Duplicate Scenario (Collapsible) ---
+with st.sidebar.expander("Duplicate Scenario", expanded=False):
+    dup_idx = st.selectbox("Select Scenario to Duplicate", [i for i, s in enumerate(st.session_state.scenarios)], format_func=lambda i: st.session_state.scenarios[i]["label"] if st.session_state.scenarios else "", key="dup_scenario")
+    if st.button("Duplicate Selected Scenario"):
+        import copy
+        new_scenario = copy.deepcopy(st.session_state.scenarios[dup_idx])
+        new_scenario["label"] += " (Copy)"
+        st.session_state.scenarios.append(new_scenario)
+        st.session_state.selected.append(True)
+        st.success(f"Duplicated scenario: {new_scenario['label']}")
+
+# --- Sidebar: Import Scenarios (Collapsible) ---
+with st.sidebar.expander("Import Scenarios", expanded=False):
+    sample_template_path = pathlib.Path("sample_scenarios_template.csv")
+    if sample_template_path.exists():
+        with open(sample_template_path, "rb") as f:
+            st.download_button(
+                label="Download Sample Import Template",
+                data=f,
+                file_name="sample_scenarios_template.csv",
+                mime="text/csv",
+                key="download_sample_template"
+            )
+    else:
+        st.info("Sample import template not found.")
+    import_file = st.file_uploader("Upload CSV or Excel", type=["csv", "xlsx"], key="import_file")
+    if import_file is not None:
+        try:
+            if import_file.name.endswith(".csv"):
+                df_import = pd.read_csv(import_file)
+            else:
+                df_import = pd.read_excel(import_file)
+            # Expect columns: label, bom, orders, conv, proto, share, celus_conv, celus_share
+            required_cols = ["label", "bom", "orders", "conv", "proto", "share", "celus_conv", "celus_share"]
+            if all(col in df_import.columns for col in required_cols):
+                st.session_state.scenarios = [
+                    {
+                        "label": row["label"],
+                        "defaults": (
+                            float(row["bom"]),
+                            float(row["orders"]),
+                            float(row["conv"]),
+                            float(row["proto"]),
+                            float(row["share"]),
+                            float(row["celus_conv"]),
+                            float(row["celus_share"]),
+                        ),
+                    }
+                    for _, row in df_import.iterrows()
+                ]
+                st.session_state.selected = [True] * len(st.session_state.scenarios)
+                st.success("Scenarios imported!")
+            else:
+                st.error(f"Missing columns: {set(required_cols) - set(df_import.columns)}")
+        except Exception as e:
+            st.error(f"Import failed: {e}")
 
 # --- Custom CSS for button coloring and column width ---
 st.markdown(
@@ -368,6 +365,8 @@ tooltips = {
 
 for idx, scenario in enumerate(st.session_state.scenarios):
     if st.session_state.selected[idx]:
+        errors = []  # Move errors definition outside columns to avoid empty columns
+        # Only render the scenario card if there is actual content
         st.markdown("<div class='scenario-card'>", unsafe_allow_html=True)
         # Make columns much narrower (about half width)
         cols = st.columns([0.5, 0.5], gap="small")
@@ -383,7 +382,6 @@ for idx, scenario in enumerate(st.session_state.scenarios):
                 celus_conversion = st.number_input(f"Increase in conversion to Active", value=celus_conv, key=f"celus_conv_{idx}", help=tooltips["celus_conv"])
                 celus_share_bom = st.number_input(f"% Share of BOM with CELUS", value=celus_share, key=f"celus_share_{idx}", help=tooltips["celus_share"])
                 # Input validation
-                errors = []
                 if bom_value < 0: errors.append("BOM Value must be non-negative.")
                 if bom_orders < 0: errors.append("BOM Orders must be non-negative.")
                 if website_visitors < 0: errors.append("Website Visitors must be non-negative.")
@@ -395,10 +393,9 @@ for idx, scenario in enumerate(st.session_state.scenarios):
                     for e in errors:
                         st.error(e)
         with cols[1]:
-            with st.expander(f"{scenario['label']} - Results", expanded=st.session_state.expand_all):
-                if errors:
-                    st.warning("Please fix input errors to see results.")
-                else:
+            # Only show the expander if there are no errors (prevents empty boxes)
+            if not errors:
+                with st.expander(f"{scenario['label']} - Results", expanded=st.session_state.expand_all):
                     total_value_per_bom = bom_value * bom_orders
                     converted_users = website_visitors * conversion
                     total_bom_value_from_users = converted_users * total_value_per_bom
@@ -445,6 +442,9 @@ for idx, scenario in enumerate(st.session_state.scenarios):
                         "Multiplier": multiplier,
                         "Annual Revenue with CELUS": annual_revenue_with_celus
                     })
+            else:
+                # If there are errors, do not show the results expander (prevents empty box)
+                pass
         st.markdown("</div>", unsafe_allow_html=True)
 
 # --- Scenario Comparison Table & Visualization ---
