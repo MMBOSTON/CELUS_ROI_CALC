@@ -1,0 +1,5 @@
+label,bom,orders,conv,proto,share,celus_conv,celus_share
+Prototype - Simple Design,50,10,0.005,0.25,0.25,0.0125,0.4
+Medium Volume - Simple Design,50,300,0.005,0.25,0.25,0.0125,0.4
+High Volume - IoT Device,75,5000,0.005,0.25,0.25,0.0075,0.4
+Custom Scenario,60,100,0.01,0.3,0.2,0.02,0.5

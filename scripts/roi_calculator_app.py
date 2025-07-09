@@ -1,4 +1,4 @@
-print("ROI Calculator app started")
+# print("ROI Calculator app started")
 import fpdf
 import streamlit as st
 import json
@@ -9,6 +9,8 @@ import io
 import altair as alt
 from fpdf import FPDF, XPos, YPos
 import pathlib
+import webbrowser
+import threading
 
 st.set_page_config(page_title="CELUS ROI Calculator", layout="wide")
 
