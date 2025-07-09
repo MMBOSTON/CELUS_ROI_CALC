@@ -1,75 +1,71 @@
 # CELUS ROI Calculator
 
-This project is a web-based Return on Investment (ROI) Calculator for component manufacturers and suppliers using the CELUS AI-based PCB design platform. The calculator helps estimate the financial impact of CELUS on lead generation and indirect sales, based on user analytics and conversion improvements.
+The **CELUS ROI Calculator** is a professional Streamlit web application that helps component manufacturers and suppliers estimate the financial impact of using the CELUS AI-based PCB design platform. By simulating different PCB production (BOM) scenarios, users can see how CELUS can increase lead generation, improve conversion rates, and boost indirect sales revenue.
 
 ## Features
-- Interactive web app built with Streamlit
-- Multiple scenarios (Prototype, Medium Volume, High Volume) with customizable assumptions
-- Collapsible sections for each scenario's inputs and results
-- Sidebar for scenario selection
-- Real-time calculation of key metrics, including:
-  - Total Value per BOM
-  - Converted Users
-  - Total BOM Value from Users
-  - Value to Production
-  - Revenue from Indirect Sales
-  - CELUS-specific conversion and revenue metrics
-  - Multiplier and Annual Revenue with CELUS
-- Can be run as a standalone desktop app (packaged with PyInstaller)
+- **Scenario-based ROI modeling**: Model multiple scenarios for different product/volume types.
+- **Interactive UI**: Adjust assumptions and instantly see calculated results.
+- **Scenario management**: Add, remove, duplicate, rename, save, load, and import/export scenarios.
+- **Comparison tools**: Compare scenarios in table and chart form.
+- **Export**: Download results as CSV, Excel, or PDF.
+- **Compact, professional UI**: Modern, responsive, and highly compact layout.
 
-## How to Run (Development)
-1. Clone the repository or download the project files.
-2. (Optional) Create and activate a Python virtual environment.
-3. Install dependencies:
-   ```
-   pip install streamlit
-   ```
-4. Start the app:
-   ```
-   streamlit run roi_calculator_app.py
-   ```
-5. The app will open in your browser at `http://localhost:8501`.
+## How It Works
+- The app uses monthly estimates for BOM values and revenues.
+- Users select or create scenarios, adjust assumptions (conversion rates, BOM value, etc.), and see the impact of CELUS adoption on revenue and conversion.
+- Results are shown side-by-side for each scenario, with comparison tools for multiple scenarios.
 
-## How to Build a Standalone App (Windows)
-1. Install PyInstaller:
-   ```
-   pip install pyinstaller
-   ```
-2. Build the executable (from the project root):
-   ```
-   pyinstaller --onefile --add-data "roi_calculator_app.py;." run_app.py
-   ```
-3. The standalone app will be in the `dist` folder as `run_app.exe`.
+## Quick Start
 
-## Project Structure
-```
-CELUS_ROI_Calc/
-│
-├── roi_calculator_app.py         # Main Streamlit app
-├── run_app.py                    # Launcher script for standalone app
-├── README.md                     # Project documentation
-├── dist/                         # PyInstaller output (ignore for editing)
-├── build/                        # PyInstaller build files (ignore)
-├── venv/                         # Python virtual environment (ignore)
-└── ...                           # Other files
+### 1. Clone the Repository
+```bash
+# Replace <repo-url> with the actual repository URL
+git clone <repo-url>
+cd CELUS_ROI_Calc
 ```
 
-## Version Control
-To enable version control with Git:
-1. Initialize a git repository:
-   ```
-   git init
-   ```
-2. Add all files:
-   ```
-   git add .
-   ```
-3. Commit:
-   ```
-   git commit -m "Initial commit: CELUS ROI Calculator app"
-   ```
-4. (Optional) Connect to a remote repository (e.g., GitHub) and push your code.
+### 2. Set Up Python Environment
+It is recommended to use a virtual environment:
+```bash
+python -m venv venv
+# On Windows:
+venv\Scripts\activate
+# On Mac/Linux:
+source venv/bin/activate
+```
 
----
+### 3. Install Requirements
+```bash
+pip install -r requirements.txt
+```
 
-For questions or improvements, please contact the CELUS team.
+### 4. Run the App
+```bash
+streamlit run scripts/roi_calculator_app.py
+```
+
+The app will open in your browser at [http://localhost:8501](http://localhost:8501).
+
+## Packaging as a Standalone EXE (Windows)
+A build script is provided for PyInstaller one-file builds:
+```bash
+# From the project root:
+cd scripts
+build.bat
+```
+The standalone EXE will be created in the `build/launch_app/` directory.
+
+## File Structure
+- `scripts/roi_calculator_app.py` — Main Streamlit app
+- `requirements.txt` — Python dependencies
+- `scenarios.json` — Saved scenarios (auto-generated)
+- `Template/ROI Calculator_v1.xlsx` — Excel template for import/export
+- `build.bat` — Build script for Windows EXE
+
+## Notes
+- The app is designed for Windows but can run on Mac/Linux with Python and Streamlit.
+- All scenario and template files are saved locally.
+- For best results, use the latest version of Chrome or Edge.
+
+## Support
+For questions or issues, please open an issue in the repository or contact the CELUS team.

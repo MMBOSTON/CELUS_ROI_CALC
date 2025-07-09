@@ -220,49 +220,175 @@ st.markdown(
     section[data-testid="stSidebar"] button {
         background-color: #90caf9 !important;
         color: #0d47a1 !important;
-        border-radius: 0.3em !important;
-        margin-bottom: 0.2em !important;
-        font-size: 0.85rem !important;
-        padding: 0.3em 0.7em !important;
-        min-height: 1.7em !important;
-        min-width: 1.7em !important;
+        border-radius: 0.2em !important;
+        margin-bottom: 0.1em !important;
+        font-size: 0.8rem !important;
+        padding: 0.2em 0.5em !important;
+        min-height: 1.3em !important;
+        min-width: 1.3em !important;
     }
     /* Sidebar subheader spacing */
     section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] h3 {
-        margin-top: 0.5em !important;
-        margin-bottom: 0.3em !important;
+        margin-top: 0.3em !important;
+        margin-bottom: 0.2em !important;
     }
     /* Sidebar markdown and widget spacing tighter */
     section[data-testid="stSidebar"] .block-container > div > div {
-        margin-bottom: 0.3em !important;
+        margin-bottom: 0.15em !important;
     }
     section[data-testid="stSidebar"] .stTextInput, section[data-testid="stSidebar"] .stSelectbox, section[data-testid="stSidebar"] .stFileUploader, section[data-testid="stSidebar"] .stCheckbox {
-        margin-bottom: 0.2em !important;
+        margin-bottom: 0.1em !important;
     }
     /* Color all other white buttons (main area) */
     .stButton > button {
         background-color: #1976d2 !important;
         color: white !important;
-        border-radius: 0.3em !important;
+        border-radius: 0.2em !important;
         font-weight: 500;
+        font-size: 0.95rem !important;
+        padding: 0.2em 0.7em !important;
     }
     /* Make scenario card columns and metric/input boxes narrower */
     .block-container .scenario-card .stColumns {
-        gap: 0.5rem !important;
+        gap: 0.1rem !important; /* ultra tight */
     }
     .block-container .scenario-card .element-container > div > div[data-testid="column"] {
-        max-width: 220px !important;
-        min-width: 120px !important;
+        max-width: 150px !important;
+        min-width: 80px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
     .scenario-card .metric-box, .scenario-card .stNumberInput, .scenario-card .stTextInput {
-        max-width: 210px !important;
-        min-width: 120px !important;
+        max-width: 140px !important;
+        min-width: 80px !important;
         margin-left: auto;
         margin-right: auto;
+        margin-bottom: 0.08rem !important;
+        padding-top: 0.08rem !important;
+        padding-bottom: 0.08rem !important;
     }
     .scenario-card .stExpanderContent {
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
+        padding-left: 0.05rem !important;
+        padding-right: 0.05rem !important;
+    }
+    /* Reduce scenario card and metric box padding and border radius */
+    .scenario-card {
+        background: #f4f8fc;
+        border-radius: 0.3rem !important;
+        padding: 0.3rem 0.3rem 0.2rem 0.3rem !important;
+        margin-bottom: 0.7rem !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        border: 1px solid #e3e8ee;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
+    .metric-box {
+        background: #eaf3fb;
+        border-radius: 0.2rem !important;
+        padding: 0.15rem 0.3rem 0.1rem 0.3rem !important;
+        margin-bottom: 0.08rem !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    /* Expander header compactness and alignment */
+    .stExpander > summary {
+        min-width: 0 !important;
+        padding: 0.08rem 0.2rem 0.08rem 0.2rem !important;
+        font-size: 0.98rem !important;
+        font-weight: 600 !important;
+        background: #e3e8ee !important;
+        border-radius: 0.2rem !important;
+        margin-bottom: 0.05rem !important;
+    }
+    .stExpander > summary span {
+        width: 100% !important;
+        display: inline-block !important;
+        text-align: left !important;
+    }
+    /* Try to align both columns to same height (best effort) */
+    .scenario-card .stColumns {
+        align-items: stretch !important;
+        display: flex !important;
+    }
+    .scenario-card .stColumns > div[data-testid="column"] {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: stretch !important;
+    }
+    /* Reduce font size for input labels and metric values */
+    .scenario-card label, .scenario-card .stExpanderContent label {
+        font-size: 0.92rem !important;
+        margin-bottom: 0.01rem !important;
+    }
+    .metric-box .stMetricValue {
+        font-size: 1.01rem !important;
+    }
+    /* Force scenario card columns to equal height */
+    .scenario-card .stColumns {
+        display: flex !important;
+        align-items: stretch !important;
+        min-height: 100%;
+    }
+    .scenario-card .stColumns > div[data-testid="column"] {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: stretch !important;
+        min-height: 100%;
+    }
+    .scenario-card .stExpander {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 100%;
+    }
+    .scenario-card .stExpanderContent {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        min-height: 100%;
+    }
+    /* Make both columns (Assumptions & Inputs and Results) widgets even more compact */
+    .scenario-card .stExpanderContent > div > div[data-testid="column"] {
+        max-width: 140px !important;
+        min-width: 80px !important;
+        padding-left: 0.01rem !important;
+        padding-right: 0.01rem !important;
+    }
+    .scenario-card .stExpanderContent .stNumberInput, .scenario-card .stExpanderContent .stTextInput {
+        margin-bottom: 0.01rem !important;
+        padding-top: 0.01rem !important;
+        padding-bottom: 0.01rem !important;
+    }
+    .scenario-card .stExpanderContent label {
+        margin-bottom: 0.01rem !important;
+        font-size: 0.90rem !important;
+    }
+    .scenario-card .stExpanderContent .stExpander {
+        margin-bottom: 0.01rem !important;
+    }
+    /* Reduce vertical spacing between metric/input boxes */
+    .scenario-card .metric-box {
+        margin-bottom: 0.18rem !important;
+        padding-top: 0.35rem !important;
+        padding-bottom: 0.35rem !important;
+    }
+    /* Reduce font size for metric labels and values */
+    .scenario-card .metric-box b {
+        font-size: 0.97rem !important;
+    }
+    .scenario-card .metric-box .stMetricValue {
+        font-size: 1.00rem !important;
+    }
+    /* Make expander headers more compact */
+    .scenario-card .stExpander > summary {
+        min-height: 1.2em !important;
+        padding-top: 0.1em !important;
+        padding-bottom: 0.1em !important;
+    }
+    .scenario-card .stExpander > summary span {
+        font-size: 1.00rem !important;
+        font-weight: 600 !important;
     }
     </style>
     """,
@@ -447,9 +573,9 @@ if display_any:
         st.markdown("</div>", unsafe_allow_html=True)
 
 # --- Scenario Comparison Table & Visualization ---
-import altair as alt
 
 if len(results_for_export) > 1:
+    st.markdown('<div class="comparison-container">', unsafe_allow_html=True)
     with st.expander("Scenario Comparison Table", expanded=False):
         st.markdown("<span style='font-size:1.1rem; font-weight:600;'>Scenario Comparison Table</span>", unsafe_allow_html=True)
         df_compare = pd.DataFrame(results_for_export)
@@ -493,6 +619,26 @@ if len(results_for_export) > 1:
                 st.altair_chart(chart, use_container_width=True)
             else:
                 st.info("Select at least one metric to display grouped bar chart.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# --- Custom CSS for comparison container alignment ---
+st.markdown(
+    """
+    <style>
+    .comparison-container {
+        max-width: 670px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 0.5rem;
+        margin-bottom: 1.2rem;
+    }
+    .comparison-container .stExpander {
+        margin-bottom: 0.7rem !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # --- Export results ---
 def export_results_to_pdf(results):
@@ -593,20 +739,43 @@ st.markdown(
     .scenario-card .stExpanderContent > div > div[data-testid="column"] {
         max-width: 140px !important;
         min-width: 80px !important;
-        padding-left: 0.05rem !important;
-        padding-right: 0.05rem !important;
+        padding-left: 0.01rem !important;
+        padding-right: 0.01rem !important;
     }
     .scenario-card .stExpanderContent .stNumberInput, .scenario-card .stExpanderContent .stTextInput {
-        margin-bottom: 0.05rem !important;
-        padding-top: 0.02rem !important;
-        padding-bottom: 0.02rem !important;
+        margin-bottom: 0.01rem !important;
+        padding-top: 0.01rem !important;
+        padding-bottom: 0.01rem !important;
     }
     .scenario-card .stExpanderContent label {
-        margin-bottom: 0.02rem !important;
-        font-size: 0.93rem !important;
+        margin-bottom: 0.01rem !important;
+        font-size: 0.90rem !important;
     }
     .scenario-card .stExpanderContent .stExpander {
-        margin-bottom: 0.05rem !important;
+        margin-bottom: 0.01rem !important;
+    }
+    /* Reduce vertical spacing between metric/input boxes */
+    .scenario-card .metric-box {
+        margin-bottom: 0.18rem !important;
+        padding-top: 0.35rem !important;
+        padding-bottom: 0.35rem !important;
+    }
+    /* Reduce font size for metric labels and values */
+    .scenario-card .metric-box b {
+        font-size: 0.97rem !important;
+    }
+    .scenario-card .metric-box .stMetricValue {
+        font-size: 1.00rem !important;
+    }
+    /* Make expander headers more compact */
+    .scenario-card .stExpander > summary {
+        min-height: 1.2em !important;
+        padding-top: 0.1em !important;
+        padding-bottom: 0.1em !important;
+    }
+    .scenario-card .stExpander > summary span {
+        font-size: 1.00rem !important;
+        font-weight: 600 !important;
     }
     </style>
     """,
