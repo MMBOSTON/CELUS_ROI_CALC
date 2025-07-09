@@ -363,13 +363,16 @@ tooltips = {
     "celus_share": "Share of BOM revenue captured with CELUS."
 }
 
-for idx, scenario in enumerate(st.session_state.scenarios):
-    if st.session_state.selected[idx]:
-        errors = []  # Move errors definition outside columns to avoid empty columns
-        # Only render the scenario card if there is actual content
+# Only render scenario cards if there is at least one selected scenario
+display_any = any(st.session_state.selected)
+if display_any:
+    for idx, scenario in enumerate(st.session_state.scenarios):
+        if not st.session_state.selected[idx]:
+            continue
+        errors = []
         st.markdown("<div class='scenario-card'>", unsafe_allow_html=True)
-        # Make columns much narrower (about half width)
-        cols = st.columns([0.5, 0.5], gap="small")
+        # Make columns even narrower: 32% for inputs, 32% for results, 36% spacer
+        cols = st.columns([0.32, 0.32, 0.36], gap="small")
         with cols[0]:
             with st.expander(f"{scenario['label']} - Assumptions & Inputs", expanded=st.session_state.expand_all):
                 bom, orders, conv, proto_prod, share, celus_conv, celus_share = scenario['defaults']
@@ -393,7 +396,6 @@ for idx, scenario in enumerate(st.session_state.scenarios):
                     for e in errors:
                         st.error(e)
         with cols[1]:
-            # Only show the expander if there are no errors (prevents empty boxes)
             if not errors:
                 with st.expander(f"{scenario['label']} - Results", expanded=st.session_state.expand_all):
                     total_value_per_bom = bom_value * bom_orders
@@ -442,9 +444,6 @@ for idx, scenario in enumerate(st.session_state.scenarios):
                         "Multiplier": multiplier,
                         "Annual Revenue with CELUS": annual_revenue_with_celus
                     })
-            else:
-                # If there are errors, do not show the results expander (prevents empty box)
-                pass
         st.markdown("</div>", unsafe_allow_html=True)
 
 # --- Scenario Comparison Table & Visualization ---
@@ -585,3 +584,31 @@ if any(k in st.session_state for k in scenario_keys):
     autosave_scenarios()
 
 # Update all file paths to use 'Template/ROI Calculator_v1.xlsx' or similar, instead of just the filename.
+
+# --- Custom CSS for both columns compactness ---
+st.markdown(
+    """
+    <style>
+    /* Make both columns (Assumptions & Inputs and Results) widgets even more compact */
+    .scenario-card .stExpanderContent > div > div[data-testid="column"] {
+        max-width: 140px !important;
+        min-width: 80px !important;
+        padding-left: 0.05rem !important;
+        padding-right: 0.05rem !important;
+    }
+    .scenario-card .stExpanderContent .stNumberInput, .scenario-card .stExpanderContent .stTextInput {
+        margin-bottom: 0.05rem !important;
+        padding-top: 0.02rem !important;
+        padding-bottom: 0.02rem !important;
+    }
+    .scenario-card .stExpanderContent label {
+        margin-bottom: 0.02rem !important;
+        font-size: 0.93rem !important;
+    }
+    .scenario-card .stExpanderContent .stExpander {
+        margin-bottom: 0.05rem !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
