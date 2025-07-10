@@ -519,7 +519,7 @@ if display_any:
                     revenue_from_indirect_sales = value_to_production * share_bom
                     # CELUS
                     celus_converted_users = website_visitors * celus_conversion
-                    celus_total_bom_value_from_users = celus_converted_users * total_bom_value_from_users
+                    celus_total_bom_value_from_users = celus_converted_users * total_value_per_bom  # FIXED: was using wrong variable
                     celus_value_to_production = celus_total_bom_value_from_users * prototype_to_prod
                     celus_revenue = celus_value_to_production * celus_share_bom
                     multiplier = celus_revenue / revenue_from_indirect_sales if revenue_from_indirect_sales else 0
